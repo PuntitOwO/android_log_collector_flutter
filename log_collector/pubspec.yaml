@@ -1,7 +1,7 @@
 name: log_collector
 description: A package to collect android logs from the application using pure dart code.
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+repository: https://github.com/PuntitOwO/android_log_collector_flutter
 
 environment:
   sdk: ^3.6.0

@@ -33,3 +33,9 @@ final File? logFile = await LogCollector.getLog();
 This is a very early build, so there might be some issues and missing features.
 I'm going to keep updating this package to make it more useful and stable.
 Issues and PRs are welcome!
+
+### Pending work
+
+- [ ] Add tests
+- [ ] Expose more options to the user
+- [ ] Improve the documentation
