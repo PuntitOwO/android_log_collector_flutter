@@ -8,30 +8,35 @@ class LogCollector {
   /// Initializes the package name.
   static void init(String packageName) => LogCollector._package = packageName;
 
-  /// Returns a [File] object for the log file.
-  static Future<File> getLogFile() async {
+  /// Returns a temp [Directory] to store the logs.
+  static Future<Directory> getLogDir() async {
     final directory = await Directory.systemTemp.createTemp(_package);
-    return File('${directory.path}/log.txt');
+    return directory;
   }
 
   /// Returns the PID of the app.
   static Future<String?> getPidOf() async {
     final pid = await Process.run("pidof", <String>["-s", _package]);
     if (pid.exitCode != 0) return null;
-    return pid.stdout.toString();
+    return pid.stdout.toString().trim();
   }
 
   /// Collects logs from the app to a file and returns the [File] object.
   static Future<File?> getLog() async {
     final pid = await getPidOf();
     if (pid == null) return null; // TODO(PuntitOwO): throw an error
-    final logFile = await getLogFile();
-    final log = await Process.run("logcat", <String>[
-      "-d", // Dump the log and exit
-      "--pid=$pid", // Only show logs from the given pid
-      "-f=${logFile.path}", // Write the log to a file
-    ]);
+    final logDirectory = await getLogDir();
+    final log = await Process.run(
+      "logcat",
+      <String>[
+        "-d", // Dump the log and exit
+        "--pid=$pid", // Only show logs from the given pid
+        "-f", "log.txt", // Write the log to a file
+      ],
+      workingDirectory: logDirectory.path,
+      runInShell: true,
+    );
     if (log.exitCode != 0) return null; // TODO: throw an error
-    return logFile;
+    return File("${logDirectory.path}/log.txt");
   }
 }
